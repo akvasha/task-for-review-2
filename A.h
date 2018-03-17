@@ -5,8 +5,8 @@
 #include <list>
 #include <cassert>
 
-const unsigned int K = 4;
-const unsigned int C = 2;
+const unsigned int EXPAND_COEFFICIENT = 4;
+const unsigned int DEFAULT_SIZE = 100;
 
 template<class KeyType, class ValueType, class Hash = std::hash<KeyType>> class HashMap {
     using object = typename std::pair<const KeyType, ValueType>;
@@ -14,18 +14,18 @@ template<class KeyType, class ValueType, class Hash = std::hash<KeyType>> class 
     using iter = typename line::iterator;
     using const_iter = typename line::const_iterator;
 private:
-    size_t max_size = 100;
+    size_t max_size = DEFAULT_SIZE;
     size_t sz;
     std::vector<line> table;
     Hash hasher;
 public:
     HashMap() : sz(0) {
-        max_size = 100;
+        max_size = DEFAULT_SIZE;
         table = std::vector<line>(max_size + 1);
     }
 
-    HashMap(const Hash _h) : max_size(100), sz(0), hasher(_h) {
-        max_size = 100;
+    HashMap(const Hash _h) : max_size(DEFAULT_SIZE), sz(0), hasher(_h) {
+        max_size = DEFAULT_SIZE;
         table = std::vector<line>(max_size + 1);
     }
 
@@ -43,10 +43,10 @@ public:
     }
 
     void rebuild() {
-        if (sz < 100 || max_size < 100)
+        if (sz < DEFAULT_SIZE || max_size < DEFAULT_SIZE)
             return;
-        if (sz > C * max_size) {
-            size_t new_size = K * max_size;
+        if (sz > (EXPAND_COEFFICIENT / 2) * max_size) {
+            size_t new_size = EXPAND_COEFFICIENT * max_size;
             std::list<object> res;
             for (size_t i = 0; i < max_size; ++i) {
                 for (auto obj : table[i])
