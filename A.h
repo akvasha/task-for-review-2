@@ -24,12 +24,12 @@ public:
         table = std::vector<line>(max_size + 1);
     }
 
-    HashMap(const Hash _h) : max_size(DEFAULT_SIZE), sz(0), hasher(_h) {
+    HashMap(const Hash &_h) : max_size(DEFAULT_SIZE), sz(0), hasher(_h) {
         max_size = DEFAULT_SIZE;
         table = std::vector<line>(max_size + 1);
     }
 
-    void erase(KeyType key) {
+    void erase(const KeyType &key) {
         size_t i = hasher(key) % max_size;
         if (!table[i].empty()) {
             for (iter it = table[i].begin(); it != table[i].end(); ++it) {
@@ -64,7 +64,7 @@ public:
         }
     }
 
-    void insert(object elem) {
+    void insert(const object &elem) {
         size_t i = hasher(elem.first) % max_size;
         for (iter it = table[i].begin(); it != table[i].end(); ++it) {
             if (it->first == elem.first)
@@ -83,7 +83,7 @@ public:
     }
 
     template<class InputIterator>
-    HashMap(InputIterator beg, InputIterator end, Hash _h) {
+    HashMap(InputIterator beg, InputIterator end, Hash &_h) {
         *this = HashMap();
         while (beg != end)
             insert(*beg++);
@@ -94,7 +94,7 @@ public:
         *this = HashMap(l.begin(), l.end());
     }
 
-    HashMap(std::initializer_list<object> l, Hash _h) {
+    HashMap(std::initializer_list<object> l, Hash &_h) {
         *this = HashMap(l.begin(), l.end(), _h);
     }
 
@@ -236,7 +236,7 @@ public:
         return const_iterator(max_size, table[max_size].end(), this);
     }
 
-    iterator find(KeyType key) {
+    iterator find(const KeyType &key) {
         size_t i = hasher(key) % max_size;
         size_t pos1 = max_size;
         iter pos2 = table[max_size].end();
@@ -250,7 +250,7 @@ public:
         return iterator(pos1, pos2, this);
     }
 
-    const_iterator find(KeyType key) const {
+    const_iterator find(const KeyType &key) const {
         size_t i = hasher(key) % max_size;
         size_t pos1 = max_size;
         const_iter pos2 = table[max_size].end();
@@ -264,13 +264,13 @@ public:
         return const_iterator(pos1, pos2, this);
     }
 
-    ValueType& operator [] (KeyType key) {
+    ValueType& operator [] (const KeyType &key) {
         if (find(key) == end())
             insert(std::make_pair(key, ValueType()));
         return (*find(key)).second;
     }
 
-    const ValueType& at(KeyType key) const {
+    const ValueType& at(const KeyType &key) const {
         if (find(key) == end())
             throw std::out_of_range("");
         return (*find(key)).second;
